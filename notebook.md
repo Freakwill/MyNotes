@@ -16,6 +16,18 @@ run the file, for example
 test.sh (chmod +x ./mysh/openpy.sh)
 ```
 
+
+
+## build link
+
+```bash
+ln -s /usr/local/lib/ruby/gems/2.5.0/gems/jekyll-3.8.5/exe/jekyll /usr/local/bin/jekyll
+```
+
+
+
+
+
 ## Install asymptote for mac (terminal commands)
 
 ```bash
@@ -234,6 +246,41 @@ cd $home && brew update
 
 
 
+## curl
+
+`curl`命令出现：
+
+`curl: (7) Failed to connect to 127.0.0.1 port 1086: Connection refused`
+
+~/.curlrc (`curl`配置文件)
+
+`socks5 = "127.0.0.1:1086"`注释掉就好了。
+
+
+
+## shell calls printer
+
+```bash
+lpr -P printer_name file_name.txt 
+# printer_name: the name of the printer you use on your system.
+# file_name.txt: the name of the text file used for printing.
+lpq
+lprm
+lpstat
+```
+
+
+
+## 电脑盒盖省电
+
+```bash
+pmset -g
+sudo pmset -a hibernatemode 25
+sudo pmset -b tcpkeepalive 0  # 盒盖断网
+```
+
+
+
 ## Python
 
 ### uninstall python
@@ -244,23 +291,6 @@ delete /Library/Frameworks/Python.framework
 delete symlink under /usr/local/bin/ of python
 ```
 
-### python calls printer
-
-1. Open a text editor and create a file named "linuxprint.py."
-2. Enter the following code in the text editor to begin the file and import the "os" module, which allows interaction with the operating system:
-
-```python
-#! /usr/bin/python
-import os
-```
-
-1. Enter the following code on the next line to execute a command that sends a text file to the printer. This requires that you save text into a file before printing:
-
-```python
-os.system("lpr -P printer_name file_name.txt") 
-# printer_name: the name of the printer you use on your system.
-# file_name.txt: the name of the text file used for printing.
-```
 
 ### run python3 defaultly
 
@@ -271,6 +301,26 @@ alias python=/Library/Frameworks/Python.framework/Versions/3.5/bin/python3.5
 ### idle configuration
 
 目录：`~\.idlerc\config-*.cfg` (Windows 7下路径为：`C:\Users\<用户名>\.idlerc\`)
+
+
+
+### 设置为可执行文件
+
+script.py 第一行为 `#!/usr/bin/env python`
+
+```bash
+chmod u+x script.py
+```
+
+
+
+### pip
+
+```bash
+pip install -r requirement.txt
+# cd 到项目目录，生成requirements.txt
+pip freeze > requirements.txt
+```
 
 
 
@@ -291,3 +341,34 @@ myqr https://github.com -p bear.png -c
 ### cut screen
 
 `shift+cmd+4`
+
+
+
+## Swift
+
+```bash
+swift package generate-xcodeproj
+```
+
+
+
+### 使用
+
+首先，创建
+
+```
+$ cd ~/Desktop
+$ mkdir helloSwiftPM 
+$ cd helloSwiftPM
+```
+
+然后
+
+```
+swift build --init
+swift build
+
+# 运行
+.build/debug/helloSwiftPM
+Hello, world!
+```

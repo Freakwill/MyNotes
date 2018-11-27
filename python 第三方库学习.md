@@ -26,7 +26,7 @@ print(page.section('See also'))  # the the content of one section
 
     Tag
     NavigableString
-    BeautifulSoup (a spcial Tap)
+    BeautifulSoup (< Tap)
     Comment (<NavigableString)
 
 #### attributions
@@ -220,6 +220,78 @@ Path('www.baidu.com/path')
 
 ```python
 f.url == f.tostr() == str(f)
+```
+
+
+
+### imbox
+
+```python
+from imbox import Imbox
+
+# SSL Context docs https://docs.python.org/3/library/ssl.html#ssl.create_default_context
+
+with Imbox('imap.qq.com',
+        username='281124072@qq.com',
+        password='hfxwhuwseodsbhdj',  # 短信授权码
+        ssl=True,
+        ssl_context=ssl._create_unverified_context(),
+        starttls=False) as imbox:
+
+    # Get all folders
+    status, folders_with_additional_info = imbox.folders()
+
+    # Gets all messages from the inbox
+    all_inbox_messages = imbox.messages()
+
+    # Unread/Flagged/Un-flagged messages
+    unread_inbox_messages = imbox.messages(unread=True)
+    inbox_flagged_messages = imbox.messages(flagged=True)
+    inbox_unflagged_messages = imbox.messages(unflagged=True)
+
+    # Messages sent FROM/TO
+    inbox_messages_from = imbox.messages(sent_from='sender@example.org')
+    inbox_messages_to = imbox.messages(sent_to='receiver@example.org')
+
+    # Messages received before specific date
+    inbox_messages_received_before = imbox.messages(date_lt=datetime.date(2018, 7, 31))
+    # Messages received after/on specific date
+    date_gt=datetime.date(2018, 7, 30)
+    date_on=datetime.date(2018, 7, 30)
+
+    # Messages whose subjects contain a string
+    inbox_messages_subject_christmas = imbox.messages(subject='Christmas')
+
+    # Messages whose UID is greater than 1050
+    inbox_messages_uids_greater_than_1050 = imbox.messages(uid_range='1050:*')
+
+    # Messages from a specific folder
+    messages_in_folder_social = imbox.messages(folder='Social')
+
+    # Some of Gmail's IMAP Extensions are supported (label and raw):
+    all_messages_with_an_attachment_from_martin = imbox.messages(folder='all', raw='from:martin@amon.cx has:attachment')
+    all_messages_labeled_finance = imbox.messages(folder='all', label='finance')
+
+    # iterating
+    for uid, message in all_inbox_messages:
+        ...
+    # Every message is an object with the following keys
+
+    message.sent_from
+    message.sent_to
+    message.subject
+    message.headers
+    message.message_id
+    message.date
+    message.body.plain
+    message.body.html
+    message.attachments
+
+    # delete the message
+    imbox.delete(uid)
+
+    # mark the message as read
+    imbox.mark_seen(uid)
 ```
 
 
@@ -556,5 +628,23 @@ env.filters['interval'] = interval
 # pylatex 利用函数实现escape
 dumps_list(l, escape=True)  # 实现字符escape
 dumps_list(l, escape=False)  # 禁止字符escape
+```
+
+
+
+### mistletoe
+
+```python
+from mistletoe.html_renderer import HTMLRenderer, escape_url
+
+class GithubWikiRenderer(HTMLRenderer):
+    def __init__(self):
+        super().__init__(GithubWiki)
+
+    def render_github_wiki(self, token):
+        template = '<a href="{target}">{inner}</a>'
+        target = escape_url(token.target)
+        inner = self.render_inner(token)
+        return template.format(target=target, inner=inner)
 ```
 
