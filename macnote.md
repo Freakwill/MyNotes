@@ -32,32 +32,13 @@ ln -s /usr/local/lib/ruby/gems/2.5.0/gems/jekyll-3.8.5/exe/jekyll /usr/local/bin
 
 
 
-### 安装 asymptote（Mac）
+推出usb
 
 ```bash
-cd ~/Desktop
-tar -xvzf asymptote-x.xx.src.tgz
-cd asymptote-x.xx
-curl -O http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source/gc-7.1.tar.gz
-./configure
-make all
-sudo make install
+diskutil unmount [/Volumes/WILLIAM]
 ```
 
-### 配置 asy (Mac)
 
-place `config.asy` in '%USERPROFILE%/.asy/'
-
-```c
-import settings;
-// outformat="eps";
-//batchView=false;
-//interactiveView=true;
-//batchMask=false;
-//interactiveMask=true;
-home = "/Users/william/";
-dir = home + "Folders/asymptote/mywork";
-```
 
 ### 改变 screencapture 类型
 
@@ -208,63 +189,21 @@ env ARCHFLAGS="-arch x86_64" pip3 install --upgrade regex
 
 
 
-### 查ip地址
-
-```b
-ifconfig
-
-en0 以太网地址
-```
-
-
-
-### ssh
-
-```shell
-# 解决 SSH Permission denied 错误
-sudo systemsetup -f -setremotelogin on
-```
-
-
-
-### selfcontrol.app
-
-selfcontrol 配置/查看/调用
+### 打印机🖨
 
 ```bash
-defaults write org.eyebeam.SelfControl BlockDuration -int 1440
-defaults write org.eyebeam.SelfControl HostBlacklist -array facebook.com news.ycombinator.com
-defaults read org.eyebeam.SelfControl
-sudo /Applications/SelfControl.app/Contents/MacOS/org.eyebeam.SelfControl $(id -u $(whoami)) --install
-
-defaults write org.eyebeam.SelfControl MaxBlockLength -int 43200
-defaults delete org.eyebeam.SelfControl
-```
-
-### curl
-
-`curl`命令出现：
-
-`curl: (7) Failed to connect to 127.0.0.1 port 1086: Connection refused`
-
-~/.curlrc (`curl`配置文件)
-
-`socks5 = "127.0.0.1:1086"`注释掉就好了。
-
-
-
-### 调用 printer
-
-```bash
-lpr -P printer_name file_name.txt 
+lpr -P printer_name file_name
 # printer_name: the name of the printer you use on your system.
-# file_name.txt: the name of the text file used for printing.
-lpq
+# file_name: the name of the file to print.
+# -o sides=two-sided-short-edge -o number-up=2  # my favourite setting
+# -o page-ranges=1-16 # set pages that will be printed (not the page shown in the pdf)
+# -o fit-to-page # zoom in/out to fit the page
+lpq  # the queue
 lprm
 lpstat
 ```
 
-
+见[man-lpr](http://www.cups.org/doc/man-lpr.html) 或 https://www.cnblogs.com/quantumman/p/11992587.html
 
 ### 电脑盒盖省电
 
@@ -285,17 +224,6 @@ ls -l
 // 清除扩展属性
 xattr -c fiename
 xattr -rc directory
-```
-
-
-
-### wifi
-
-```bash
-airport -s
-airport en0 sniff 6 //抓包
-aircrack-ng /tmp/airportSniff8g0Oex.cap //破解
-aircrack-ng -w dict.txt -b bc:46:99:df:6c:72 /tmp/airportSniffdaMCjH.cap
 ```
 
 
@@ -328,7 +256,121 @@ ls -la | pbcopy
 
 剪贴板内容`pbpaste > test.txt`
 
+
+
+### 复制、备份
+
+```bash
+cp -R source dest_folder
+```
+
+
+
+### selfcontrol.app
+
+selfcontrol 配置/查看/调用
+
+```bash
+defaults write org.eyebeam.SelfControl <BlockDuration> -int 1440
+defaults write org.eyebeam.SelfControl <HostBlacklist> -array facebook.com news.ycombinator.com
+defaults read org.eyebeam.SelfControl
+sudo /Applications/SelfControl.app/Contents/MacOS/org.eyebeam.SelfControl $(id -u $(whoami)) --install
+
+defaults write org.eyebeam.SelfControl <MaxBlockLength> -int 43200
+defaults delete org.eyebeam.SelfControl
+```
+
+
+
+### 网络
+
+#### 查ip地址
+
+```b
+ifconfig
+
+en0 以太网地址
+
+ifconfig|grep 192|awk -F ' ' '{print $2}' # 本机IP地址
+```
+
+
+
+#### ssh
+
+```shell
+# 解决 SSH Permission denied 错误
+sudo systemsetup -f -setremotelogin on
+
+# 登录
+ssh thu06@192.168.20.62 -p 22 # 输入密码
+
+# 推出
+exit
+```
+
+
+
+#### sftp
+
+sftp命令示例
+
+```bash
+# sftp -P [端口] 用户@ip
+sftp -P 30022 thu06@61.135.126.46
+
+sftp> put 本地文件 远程文件  # 发送
+sftp> get 本地文件 远程文件  # 下载
+```
+
+
+
+#### curl
+
+`curl`命令出现：
+
+`curl: (7) Failed to connect to 127.0.0.1 port 1086: Connection refused`
+
+~/.curlrc (`curl`配置文件)
+
+`socks5 = "127.0.0.1:1086"`注释掉就好了。
+
+
+
+#### wifi
+
+wifi破解
+
+```bash
+airport -s
+airport en0 sniff 6 //抓包
+aircrack-ng /tmp/airportSniff8g0Oex.cap //破解
+aircrack-ng -w dict.txt -b bc:46:99:df:6c:72 /tmp/airportSniffdaMCjH.cap
+```
+
+
+
+### 移除 usb
+
+```bash
+diskutil unmount /Volumes/my-usb
+```
+
+
+
+### 错误处理
+
+#### you do not exist in the passwd database
+
+解决：关闭terminal终端，重新打开一个terminal再次运行即可。
+
+
+
 ## Python
+
+### [PYTHONPATH](https://docs.python.org/3/using/cmdline.html#envvar-PYTHONPATH)
+
+个人路径存储于`PYTHONPATH`环境变量
 
 ### uninstall python
 
@@ -470,6 +512,18 @@ pip install pygraphviz --install-option="--include-path=/usr/local/Cellar/graphv
 ```
 
 
+
+### pyqt
+
+1. qt-creator 创建UI
+2. pyuic5 转换: .ui -> .py
+3. 编辑.py
+
+
+
+### ipython
+
+`python3 -c 'import IPython.__main__'` 可以启动ipython
 
 
 
@@ -620,7 +674,7 @@ library(randomForest)  # 加载randomForest
 library('randomForest')  # 或者
 
 p<-'randomForest'
-library(p)  #报错
+library(p)  #报错, 等同于library('p')
 library(p,character.only=T)  #正常加载randomForest
 ```
 
@@ -723,3 +777,77 @@ my.cnf位置
 ## Sublime Text
 
 Sublime Text 使用 login shell 获得 environment variables. 默认login shell 是 `zsh` 不是 `bash`, 使用 `.zprofile`配置.
+
+
+
+## Ruby
+
+### 包/库搜索路径设置
+
+`export RUBYLIB=...`
+
+
+
+## Latex
+
+### beamer
+
+#### latex beamer 插入代码
+
+在beamer中使用 listings 输出源代码时遇到如下错误：
+
+> Runaway argument?
+> ! Paragraph ended before \lst@next was complete.
+> <to be read again>
+>           \par
+> l.68 \end{frame}
+> ?
+
+应在有listings环境的frame加入`fragile`参数：
+
+```latex
+\begin{frame}[fragile]\frametitle{Your title}
+...
+\end{frame}
+```
+
+
+
+## VSCODE
+
+遇到import error, 正确设置左下方的Python解析器
+
+
+
+## Typora
+
+主题路径“/System/Volumes/Data/Users/$USERNAME/Library/Application Support/abnerworks.Typora/themes” (homebrew安装)
+
+## Asymptote
+
+### 安装 asymptote（Mac）
+
+```bash
+cd ~/Desktop
+tar -xvzf asymptote-x.xx.src.tgz
+cd asymptote-x.xx
+curl -O http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source/gc-7.1.tar.gz
+./configure
+make all
+sudo make install
+```
+
+### 配置 asy (Mac)
+
+place `config.asy` in '%USERPROFILE%/.asy/'
+
+```c
+import settings;
+// outformat="eps";
+//batchView=false;
+//interactiveView=true;
+//batchMask=false;
+//interactiveMask=true;
+home = "/Users/william/";
+dir = home + "Folders/asymptote/mywork";
+```
